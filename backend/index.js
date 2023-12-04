@@ -3,26 +3,30 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const { PrismaClient } = require('@prisma/client');
+const cors = require('cors');
 
 dotenv.config();
 const prisma = new PrismaClient();
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
-// Routers
-const customerRouter = require('./src/routers/customerRouter');
-const roomRouter = require('./src/routers/roomRouter');
-const bookingRouter = require('./src/routers/bookingRouter');
-const roomBookingRouter = require('./src/routers/roomBookingRouter');
+// Import routes
+const customerRoutes = require('./routes/customer');
+// const receptionRoutes = require('./routes/receptionRoutes');
+// const housekeepingRoutes = require('./routes/housekeepingRoutes');
 
-app.use('/api/customers', customerRouter);
-app.use('/api/rooms', roomRouter);
-app.use('/api/bookings', bookingRouter);
-app.use('/api/roombookings', roomBookingRouter);
+// Use routes
+app.use('/customer', customerRoutes);
+// app.use('/reception', receptionRoutes);
+// app.use('/housekeeping', housekeepingRoutes);
 
-const PORT = process.env.PORT || 3000;
+
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
