@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 const Room = ({hotelData, allRates}) => {
   const mapping = {sup_d: "Superior Double", sup_t:"Superior Twin" , std_d: "Standard Double", std_t: "Standard twin" }
   const navigate = useNavigate();
-  console.log(hotelData.RoomImage[0].image_url)
   return (
     <div className='max-w-[410px] h-max p-4 cursor-pointer bg-white' onClick={()=> navigate(`/${hotelData.r_no}`)}>
         <div className=''>

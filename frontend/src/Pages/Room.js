@@ -5,11 +5,13 @@ import { useParams } from "react-router-dom";
 import { activeModal, allRate } from "../Middlewares/global-state";
 import Room from "../Components/Home/Room";
 import BookingModal from "../Components/Home/BookingModal";
+import ConfirmModal from "../Components/Home/ConfirmModal";
 
 const Index = () => {
     const [hotel, setHotel] = useState(null)
     const [allHotels, setAllHotels] = useState([])
     const [allRates, setAllRates] = useAtom(allRate)
+    const [num, setNum] = useState(1)
     const [currentModal, setCurrentModal] = useAtom(activeModal);
 
     const hot = useParams()
@@ -25,7 +27,6 @@ const Index = () => {
         if(hotel) {
             axios.get(`${process.env.REACT_APP_API_URL}/customer/hotel-by-class/${hotel.r_class}`)
             .then((response)=> {
-                console.log(response.data)
                 setAllHotels(response.data.hotelDataByClass)
             })
             .catch((error) => {
@@ -38,8 +39,18 @@ const Index = () => {
     {currentModal && currentModal==="BOOKING" &&
         (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50">
+                <div className="w-full flex flex-col items-center absolute">
+                    <BookingModal roomNo={num} price={allRates[hotel.r_class]} r_no={hotel.r_no}/>
+                </div>
+            </div>
+        )
+
+    }
+    {currentModal && currentModal==="CONFIRM BOOKING" &&
+        (
+            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50">
                 <div className="w-full flex flex-col items-center">
-                    <BookingModal/>
+                    <ConfirmModal/>
                 </div>
             </div>
         )
@@ -49,15 +60,15 @@ const Index = () => {
         <div className="w-full min-w-full flex justify-center">
             <div className="max-w-7xl w-full flex justify-between  px-4 py-10 text-blackk">
                 <div className="">
-                    <div className="lg:space-x-6 w-full lg:flex my-10 shadow-2xl">
+                    <div className="lg:space-x-6 w-full lg:flex my-10 shadow-2xl p-2">
                         <div className="w-full lg:w-1/2">
                             <img src={`/${hotel.RoomImage[0].image_url}.jpg`} alt={hotel.r_no}/>
                         </div>
                         <div className="w-full lg:w-1/2">
-                            <div className=''>
+                            <div className='my-4'>
                                 
                                 <div className="my-3">
-                                    <h1 className='font-bold text-2xl'>{hotel.r_no}</h1>
+                                    <h1 className='font-bold text-2xl'>Room {hotel.r_no}</h1>
                                     <p className='text-greyy text-sm'>{hotel.RoomImage[0].facility}</p>
                                 </div>
                                 <button className='px-4 py-2 text-xs bg-highlight text-white rounded-3xl'>Availlable</button>
@@ -65,9 +76,9 @@ const Index = () => {
                                 <div className="my-4 border-2 w-max">
                                     <label className="font-bold">
                                         <span className="text-lg">No of rooms: </span>
-                                        <select className="px-4">
+                                        <select className="px-4" onChange={(e)=> setNum(e.target.value)}>
                                             {[1,2,3,4,5,6,7,8,9,10].map((num) => {
-                                                return <option key={num}>{num}</option>
+                                                return <option key={num} value={num} >{num}</option>
                                             })}
                                         </select>
                                     </label>
@@ -85,7 +96,7 @@ const Index = () => {
                             
                             {allHotels && allHotels.length>0 &&
                                 allHotels.map((hotel) => {
-                                    return <Room key={hotel.id} hotelData={hotel} allRates={allRates}/>
+                                    return <Room key={hotel.r_no} hotelData={hotel} allRates={allRates}/>
                                 })
                             }
                         </div>

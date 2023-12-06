@@ -10,13 +10,14 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit= async() => {
+  const handleSubmit= async(e) => {
+    e.preventDefault();
     setIsLoading(true);
-      await axios.post(`${process.env.API_URL}/api/customer/login`, {email, password})
+      await axios.post(`${process.env.REACT_APP_API_URL}/customer/login`, {c_email:email, password})
       .then((res) => {
           console.log(res.data);
           Cookies.set("authToken", res.data.token);
-          navigate("/room", { replace: true });
+          navigate("/", { replace: true });
         })
         .catch((err) => {
           console.error(err);

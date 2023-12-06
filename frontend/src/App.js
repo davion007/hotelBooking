@@ -8,6 +8,8 @@ import Signup from "./Components/Home/Signup";
 import { useEffect } from "react";
 import axios from "axios";
 import { allRate } from "./Middlewares/global-state";
+import Protected from "./Middlewares/Protected";
+import Booking from "./Pages/Booking";
 function App() {
   const [allRates, setAllRates] = useAtom(allRate);
   useEffect(()=> {
@@ -30,10 +32,11 @@ function App() {
         <BrowserRouter>
         <Header/>
           <Routes>
-            <Route path="/" element={<Home/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
-            <Route path="/:id" element={<Room/>}/>
+            <Route path="/" element={<Protected><Home/></Protected>}/>
+            <Route path="/login" element={<Protected><Login/></Protected>}/>
+            <Route path="/signup" element={<Protected><Signup/></Protected>}/>
+            <Route path="/:id" element={<Protected><Room/></Protected>}/>
+            <Route path="/booking" element={<Protected><Booking/></Protected>}/>
           </Routes>
         </BrowserRouter>
 

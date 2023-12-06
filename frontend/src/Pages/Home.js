@@ -36,7 +36,7 @@ const Home = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {allHotels.length>0 &&
                         allHotels.map((hotel) => {
-                            return <Room key={hotel.id} hotelData={hotel} allRates={allRates}/>
+                            return <Room key={hotel.r_no} hotelData={hotel} allRates={allRates}/>
                         })
                     }
                     
