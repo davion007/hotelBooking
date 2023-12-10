@@ -2,11 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const {
-  viewCheckedOutRooms,
   updateRoomStatus,
+  getOccupiedBookings,
+  checkOutBooking,
 } = require('../controllers/houseKeeping');
 
-router.get('/checked-out-rooms', viewCheckedOutRooms);
-router.post('/update-room-status/:roomId', updateRoomStatus);
+router.get('/checked-out-rooms', getOccupiedBookings);
+router.post('/update-room-status/', checkOutBooking);
 
 module.exports = router;

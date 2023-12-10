@@ -132,14 +132,15 @@ const fetchUserBookings = async (req, res) => {
 const createBooking = async (req, res) => {
   const { r_no, c_no, roomno, checkin, checkout, price } = req.body;
   try {
+    console.log(r_no)
     // Check room availability
-    const availableRoom = await prisma.room.findUnique({
+    const availableRoom = await prisma.room.findFirst({
       where: {
         r_no: parseInt(r_no),
         r_status: 'A', // Assuming 'A' stands for available
       },
     });
-
+    console.log(availableRoom)
     if (!availableRoom) {
       res.status(400).json({ message: 'The room is not available' });
       return;
@@ -169,7 +170,17 @@ const createBooking = async (req, res) => {
       },
     });
 
-    res.json({ booking });
+    
+    await prisma.room.update({
+      where: {
+        r_no: parseInt(r_no),
+      },
+      data: {
+        r_status: 'X', 
+      },
+    });
+  
+    res.status(200).json({ booking });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

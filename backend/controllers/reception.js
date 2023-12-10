@@ -1,65 +1,133 @@
-// controllers/receptionController.js
+// controllers/reception.js
 const { PrismaClient } = require('@prisma/client');
+const e = require('express');
 const prisma = new PrismaClient();
 
-const checkInGuest = async (req, res) => {
-  // Implementation for checking in a guest
-  const { bookingId } = req.params;
+// Check-in a guest
+exports.checkInGuest = async (req, res) => {
+  const cId = parseInt(req.params.cId);
+  const rbNo = parseInt(req.body.rbNo);
+  console.log(rbNo)
+  try {
+    // Check if RoomBooking record exists
+    const updatedRoomBooking = await prisma.roomBooking.update({
+      where: {
+        rb_no: rbNo
+      },
+      data: {
+        room: {
+          update: {
+            r_status: 'O', // 'X' represents an occupied room, modify accordingly
+          },
+        },
+      },
+    });
 
-  // Update room status to 'checked in'
-  await prisma.roomBooking.updateMany({
-    where: {
-      bookingId,
-    },
-    data: {
-      status: 'C', // Assuming 'C' stands for checked in
-    },
-  });
+    // You might want to check if the update was successful or handle errors appropriately
+    if (!updatedRoomBooking) {
+      res.status(400).json({ message: 'Failed to update room status' });
+      return;
+    }
 
-  res.json({ message: 'Guest checked in successfully' });
+    // Send the updated booking as a response
+    res.json({ updatedRoomBooking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-const checkOutGuest = async (req, res) => {
-  // Implementation for checking out a guest
-  const { bookingId } = req.params;
 
-  // Update room status to 'checked out'
-  await prisma.roomBooking.updateMany({
-    where: {
-      bookingId,
-    },
-    data: {
-      status: 'O', // Assuming 'O' stands for checked out
-    },
-  });
 
-  res.json({ message: 'Guest checked out successfully' });
+// Check-out a guest
+exports.checkOutGuest = async (req, res) => {
+  const cId = parseInt(req.params.cId);
+  const rbNo = parseInt(req.body.rbNo);
+  console.log(rbNo)
+  try {
+    // Check if RoomBooking record exists
+    const updatedRoomBooking = await prisma.roomBooking.update({
+      where: {
+        rb_no: rbNo
+      },
+      data: {
+        room: {
+          update: {
+            r_status: 'C', // 'X' represents an occupied room, modify accordingly
+          },
+        },
+      },
+    });
+
+    // You might want to check if the update was successful or handle errors appropriately
+    if (!updatedRoomBooking) {
+      res.status(400).json({ message: 'Failed to update room status' });
+      return;
+    }
+
+    // Send the updated booking as a response
+    res.json({ updatedRoomBooking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-const viewPayments = async (req, res) => {
-  // Implementation for viewing payments
-  const payments = await prisma.booking.findMany({
-    where: {
-      paymentReceived: true,
-    },
-    include: { rooms: true },
-  });
 
-  res.json({ payments });
+// View all bookings
+exports.viewBookings = async (req, res) => {
+  try {
+    const bookings = await prisma.booking.findMany({
+      include: {
+        customer: true,
+        roomBookings: {
+          include: {
+            room: true,
+          },
+        },
+      },
+    });
+
+    res.json({ bookings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-const processPayment = async (req, res) => {
-  // Implementation for processing payment
-  const { bookingId } = req.params;
+// View customer and all bookings by ID
+exports.viewCustomerById = async (req, res) => {
+  const customerId = parseInt(req.params.id);
 
-  // Additional logic for processing payment
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: {
+        c_no: customerId,
+      },
+    });
 
-  res.json({ message: 'Payment processed successfully' });
+    if (!customer) {
+      res.status(404).json({ message: 'Customer not found' });
+      return;
+    }
+
+    const bookings = await prisma.booking.findMany({
+      where: {
+        c_no: customerId,
+      },
+      include: {
+        roomBookings: {
+          include: {
+            room: true,
+          },
+        },
+      },
+    });
+    console.log(customer, bookings)
+    res.json({ bookings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-module.exports = {
-  checkInGuest,
-  checkOutGuest,
-  viewPayments,
-  processPayment,
-};

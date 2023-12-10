@@ -11,7 +11,7 @@ const Room = ({hotelData, allRates}) => {
                 <img src={`/${hotelData.RoomImage[0].image_url}.jpg`} alt={hotelData.r_no} className='max-w-[368px] h-[277px]' />
             </div>
             <div className='py-4'>
-                <button className='px-4 py-2 text-xs bg-highlight text-white rounded-3xl'>{hotelData.r_status === "A"? "Available": "Unavailable"}</button>
+                <button className={`px-4 py-2 text-xs ${hotelData.r_status === "A"?" bg-highlight" : "bg-slate-500"} text-white rounded-3xl`}>{hotelData.r_status === "A"? "Available": "Unavailable"}</button>
                 <h1 className='font-bold text-lg'>Room {hotelData.r_no}</h1>
                 <p className='text-greyy text-sm'>{hotelData.RoomImage[0].facility}</p>
                 <p className='text-greyy'>{mapping[hotelData.r_class]}</p>

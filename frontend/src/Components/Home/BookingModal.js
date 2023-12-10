@@ -44,8 +44,12 @@ const BookingModal = ({roomNo , price, r_no}) => {
         checkout:isoCheckout,
         price:price
     })
-    .then(()=> {
-      setCurrentModal("BOOKING")
+    .then((res)=> {
+      console.log(res.data.booking)
+      if(res.status === 200){
+        setCurrentModal("CONFIRM BOOKING");
+        navigate('/booking')
+      }
     })
     .catch(err => {
       console.error(err);

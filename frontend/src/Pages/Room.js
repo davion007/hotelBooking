@@ -71,7 +71,7 @@ const Index = () => {
                                     <h1 className='font-bold text-2xl'>Room {hotel.r_no}</h1>
                                     <p className='text-greyy text-sm'>{hotel.RoomImage[0].facility}</p>
                                 </div>
-                                <button className='px-4 py-2 text-xs bg-highlight text-white rounded-3xl'>Availlable</button>
+                                <button className={`px-4 py-2 text-xs ${hotel.r_status === "A"?" bg-highlight" : "bg-slate-500"} text-white rounded-3xl`}>{hotel.r_status === "A"? "Available": "Unavailable"}</button>
                                 <p className='text-xl font-bold my-2'>{mapping[hotel.r_class]}</p>
                                 <div className="my-4 border-2 w-max">
                                     <label className="font-bold">
@@ -86,7 +86,7 @@ const Index = () => {
                                 {allRate &&
                                     <p className='font-bold'>${allRates[hotel.r_class]}</p>
                                 }
-                                <p className='px-4 py-2 bg-primary w-max rounded-md text-white mt-2 cursor-pointer hover:bg-opacity-80 ' onClick={()=> setCurrentModal("BOOKING")}>Book Now</p>
+                                <p className={`px-4 py-2 ${hotel.r_status === "A"? "bg-primary": "bg-slate-500"}   w-max rounded-md text-white mt-2 cursor-pointer hover:bg-opacity-80 `} onClick={()=> hotel.r_status === "A"? setCurrentModal("BOOKING"): ""}>Book Now</p>
                             </div>
                         </div>
                     </div>

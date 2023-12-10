@@ -14,13 +14,13 @@ app.use(cors());
 
 // Import routes
 const customerRoutes = require('./routes/customer');
-// const receptionRoutes = require('./routes/receptionRoutes');
-// const housekeepingRoutes = require('./routes/housekeepingRoutes');
+const receptionRoutes = require('./routes/reception');
+const housekeepingRoutes = require('./routes/housekeeping');
 
 // Use routes
 app.use('/customer', customerRoutes);
-// app.use('/reception', receptionRoutes);
-// app.use('/housekeeping', housekeepingRoutes);
+app.use('/reception', receptionRoutes);
+app.use('/housekeeping', housekeepingRoutes);
 
 
 const PORT = process.env.PORT || 4000;
